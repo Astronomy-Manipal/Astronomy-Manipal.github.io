@@ -1,7 +1,35 @@
 <?php
+	session_start();
+	$article_id = "";
+	$_SESSION['article_id'] = $article_id;
+
 	require_once('includes/function/autoload.php');
 	$mSqlObj = new MySqlDriver;
-	$article=$mSqlObj->selectOrderQry(ARTICLE,'','','id','','');
+	$articles=$mSqlObj->selectOrderQry(ARTICLE,'','','id','','');
+	
+	$id_array = Array();
+	$title_array = Array();
+	$img_array = Array();
+	$about_array = Array();
+	
+	while ($row = $articles->fetch_assoc())
+	{
+		$id_array[] = $row['id'];
+		$title_array[] = $row['title'];
+		$img_array[] = $row['image_links'];
+		$about_array[] = $row['description'];
+	}
+	
+    // convert the PHP array into JSON format, so it works with javascript
+    $id_json = json_encode($id_array);
+	// print_r($id_array);
+	$title_json = json_encode($title_array);
+	// print_r($title_array);
+	$img_json = json_encode($img_array);
+	// print_r($img_array);
+	$about_json = json_encode($about_array);
+	// print_r($about_array);
+	// die();
 ?>
 
 <!DOCTYPE html>
@@ -130,7 +158,7 @@
       </div>
     </div>
   </section>
-
+  
   <!-- Footer -->
   <footer class="footer">
     <div class="container">
@@ -179,21 +207,20 @@
 
   <!-- Custom scripts for this template -->
   <script src="js/agency.min.js"></script>
-
+	
 	<script id="article-grid-template" type="text/x-handlebars-template">	
 		<div class="row">	
 		{{#each article}}
 			<div class="col-md-4 col-sm-6 portfolio-item">
-				<a href="blogpage.html" class="portfolio-link">
+				<a href="blogpage.php?article={{id}}" class="portfolio-link" onclick="assign2php({{title}});">
 					<div class="portfolio-hover">
 						<div class="portfolio-hover-content">
-							<i class="fas fa-plus fa-3x"></i>
+							<i class="fas fa-plus fa-2x"></i>
 						</div>
 					</div>
 							
-					<img class="img-fluid" src="{{imgsrc}}" alt="{{title}}">
+					<img class="img-fluid" src="{{imgsrc}}" alt="{{title}}" style="width: 400px; height: 250px;">
 				</a>
-					
 				<div class="portfolio-caption">
 					<h4>{{title}}</h4>
 					<p class="text-muted">
@@ -201,55 +228,71 @@
 					</p>
 				</div>
 			</div>
+			
 		{{/each}}
 		</div>
 	</script>
 	
 	<script type="text/javascript">
-	
-		var data = { article: [
+		
+		var i=0;
+		var id_array = <?php echo $id_json; ?>;
+		var title_array = <?php echo $title_json; ?>;
+		var img_array = <?php echo $img_json; ?>;
+		var about_array = <?php echo $about_json; ?>;
+		
+		var imgsrc_array = [];
+		
+		for(i=0; i<img_array.length; i++)
+		{
+			var imagesrcs = img_array[i].split(";");
+			imgsrc_array[i] = imagesrcs[0];
+		}
+		
+		var data={};
+		
+		function toJSONObject()
+		{
+			i=0;
+			var article =[];
+			id_array.forEach(function(entry)
 			{
-				title: "Dark Energy",
-				imgsrc: "img/portfolio/01-thumbnail.jpg",
-				about: "Applying Machine Learning algorithms to solve problems and process astronomical data",
-			},
-			{
-				title: "Dark Energy",
-				imgsrc: "img/portfolio/01-thumbnail.jpg",
-				about: "Applying Machine Learning algorithms to solve problems and process astronomical data",
-			},
-			{
-				title: "Dark Energy",
-				imgsrc: "img/portfolio/01-thumbnail.jpg",
-				about: "Applying Machine Learning algorithms to solve problems and process astronomical data",
-			},
-			{
-				title: "Dark Energy",
-				imgsrc: "img/portfolio/01-thumbnail.jpg",
-				about: "Applying Machine Learning algorithms to solve problems and process astronomical data",
-			},
-			{
-				title: "Dark Energy",
-				imgsrc: "img/portfolio/01-thumbnail.jpg",
-				about: "Applying Machine Learning algorithms to solve problems and process astronomical data",
-			},
-			{
-				title: "Dark Energy",
-				imgsrc: "img/portfolio/01-thumbnail.jpg",
-				about: "Applying Machine Learning algorithms to solve problems and process astronomical data",
-			},
-			{
-				title: "Dark Energy",
-				imgsrc: "img/portfolio/01-thumbnail.jpg",
-				about: "Applying Machine Learning algorithms to solve problems and process astronomical data",
-			}
-		]};
+				var article_obj={}
+				article_obj['id'] = entry;
+				article_obj['title'] = title_array[i];
+				article_obj['imgsrc'] = imgsrc_array[i];
+				article_obj['about'] = about_array[i];
+				i = i+1;
+				// alert("id: " + article_obj['id']);
+				// alert("title: " + article_obj['title']);
+				// alert("image: " + article_obj['imgsrc']);
+				article.push(article_obj);
+			});
+			data={article};
+		}
+		
+		toJSONObject();
 		
 		var source = $("#article-grid-template").html();
 		var detail_template = Handlebars.compile(source);
 		var html = detail_template(data);
 		$('#articles').html(html);
+		
 		</script>
+		
+		<!--
+		<script type="text/javascript">
+		
+			function assign2php(title)
+			{
+				alert("a");
+				
+				//document.cookie = 'title =' + title;	
+				//?php $title = $_COOKIE['title']; ?>
+			}
+			
+		</script>
+		-->
 </body>
 
 </html>

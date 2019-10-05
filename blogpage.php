@@ -1,3 +1,26 @@
+<?php
+	$article_id = $_GET['article'];
+	
+	require_once('includes/function/autoload.php');
+	$mSqlObj = new MySqlDriver;
+	$article_data=$mSqlObj->selectOrderQry(ARTICLE,"id=?",array($article_id),'id','','');
+	
+	while ($row = $article_data->fetch_assoc())
+	{
+		$title[] = $row['title'];
+		$img[] = $row['image_links'];
+		$data[] = $row['data'];
+	}
+	$title = $title[0];
+	$img = $img[0];
+	$data = $data[0];
+	// echo $title;
+	// echo $img;
+	// echo $data;
+	// die();
+?>
+	
+
 <!DOCTYPE html>
 <html lang="en">
 	<head>
@@ -67,10 +90,10 @@
 			<div class="container">
 				<div class="row">
 					<div class="col-lg-12 text-center">
-						<h2 class="section-heading text-uppercase">Dark Matter</h2>
-						<img class="img-fluid" src="img/map-image.png" width="500px"/>
+						<h2 id="title" class="section-heading text-uppercase">Dark Matter</h2>
+						<img id="image" class="img-fluid" src="img/map-image.png" width="500px"/>
 
-						<p>
+						<p id="data">
 							When we think about gravity, we think about how we are perpetually pulled towards the ground. How objects thrown upward are bound to fall back down. Our use of the term ‘Gravity’ is aimed more at phenomena localized around Earth. But gravity isn’t just restricted to the Earth. What about the moon revolving around the earth? Or planets revolving around the sun? Even our solar system is constantly in motion around the center of our galaxy.
 							All these are due to a unique phenomenon we call Gravitation.
 							<br />
@@ -182,6 +205,15 @@
   <!-- Custom scripts for this template -->
   <script src="js/agency.min.js"></script>
 
+	<script type="text/javascript">
+		images = "<?php echo $img; ?>";
+		var imagesrc_array = images.split(";");
+		var imagesrc = imagesrc_array[0];
+		document.getElementById("title").innerText = "<?php echo $title; ?>";
+		document.getElementById("image").src = imagesrc;
+		alert(imagesrc);
+	</script>
+	
 </body>
 
 </html>
