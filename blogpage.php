@@ -210,8 +210,8 @@
 		var imagesrc_array = images.split(";");
 		var imagesrc = imagesrc_array[0];
 		document.getElementById("title").innerText = "<?php echo $title; ?>";
-		document.getElementById("image").src = imagesrc;
-		alert(imagesrc);
+		document.getElementById("image").src = "img/articles/" + imagesrc;
+		document.getElementById("data").innerHTML = `<?php echo $data; ?>`;
 	</script>
 	
 </body>

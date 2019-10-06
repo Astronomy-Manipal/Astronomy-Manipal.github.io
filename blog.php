@@ -104,7 +104,7 @@
 				<div class="row">
 					<div class="col-lg-12 text-center">
 						<h2 class="section-heading text-uppercase">Horologium.Space</h2>
-						<h3 class="section-subheading text-muted">Some blogs by the club members</h3>
+						<h3 class="section-subheading text-muted">Some articles by the club members</h3>
 					</div>
 				</div>
 				
@@ -219,7 +219,7 @@
 						</div>
 					</div>
 							
-					<img class="img-fluid" src="{{imgsrc}}" alt="{{title}}" style="width: 400px; height: 250px;">
+					<img class="img-fluid" src="img/articles/{{imgsrc}}" alt="{{title}}" style="width: 400px; height: 250px;">
 				</a>
 				<div class="portfolio-caption">
 					<h4>{{title}}</h4>
